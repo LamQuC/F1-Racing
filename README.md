@@ -1,47 +1,47 @@
 # F1 Racing Analytics 
 
-## Mục tiêu dự án
-Dự án xây dựng hệ thống thu thập, xử lý, phân tích và trực quan hóa dữ liệu Telemetry của giải đua xe Công thức 1 (F1) theo thời gian thực. Hệ thống mô phỏng pipeline hiện đại với các thành phần: Kafka, PostgreSQL, FastF1, dbt, Streamlit.
+## Project Objective
+This project builds a system to collect, process, analyze, and visualize Formula 1 (F1) Telemetry data in real-time. The system simulates a modern data pipeline featuring: Kafka, PostgreSQL, FastF1, dbt, and Streamlit.
 
 ---
 
-## Kiến trúc tổng quan
+## Architecture Overview
 
 ```
 [FastF1] → [Kafka Producer] → [Kafka Broker] → [Kafka Consumer] → [Postgres] → [dbt] → [Streamlit Dashboard]
 ```
 
-- **FastF1**: Crawl & chuẩn hóa dữ liệu Telemetry từ các chặng đua F1.
-- **Kafka**: Truyền dữ liệu streaming giữa Producer và Consumer.
-- **Postgres**: Lưu trữ dữ liệu thô (bronze layer).
-- **dbt**: Chuyển đổi, tổng hợp dữ liệu (silver/gold layer).
-- **Streamlit**: Dashboard trực quan hóa, mô phỏng & phân tích kỹ thuật.
+- **FastF1**: Crawls and normalizes Telemetry data from F1 Grand Prix events.
+- **Kafka**: Manages streaming data transmission between the Producer and Consumer.
+- **Postgres**: Stores raw telemetry data (Bronze layer).
+- **dbt**: Transforms and aggregates data (Silver/Gold layers).
+- **Streamlit**: Dashboard for visualization, simulation, and technical analysis.
 
 ---
 
-## Hướng dẫn cài đặt
+## Installation Guide
 
-### 1. Yêu cầu hệ thống
+### 1. System Requirements
 - Python 3.9+
-- Docker (hoặc cài riêng Postgres, Kafka)
+- Docker (or standalone installations of Postgres and Kafka)
 
-### 2. Khởi tạo môi trường
+### 2. Environment Initialization
 ```bash
 python -m venv .venv
 .venv\Scripts\activate  # Windows
 pip install -r requirements.txt
 ```
 
-### 3. Khởi động dịch vụ bằng Docker
+### 3. Start Services with Docker
 ```bash
 cd docker
-# Khởi động Postgres & Kafka
-# (Cần Docker Desktop)
+# Start Postgres & Kafka
+# (Requires Docker Desktop)
 docker compose up -d
 ```
 
-### 4. Thiết lập biến môi trường
-Tạo file `.env` ở thư mục gốc (đã có mẫu):
+### 4. Set Up Environment Variables
+Create a .env file in the root directory (template provided):
 ```
 DB_USER=de_user
 DB_PASS=de_password
@@ -51,79 +51,72 @@ DB_NAME=postgres
 KAFKA_BROKER=localhost:9092
 ```
 
-### 5. Chạy pipeline
-- **Producer**: Crawl & gửi dữ liệu lên Kafka
+### 5. Run the Pipeline
+- **Producer**: Crawls and sends data to Kafka
   ```bash
   python src/producers/telemetry_producer.py
   ```
-- **Consumer**: Nhận & ghi dữ liệu vào Postgres
+- **Consumer**:Receives and writes data to Postgres
   ```bash
   python src/consumers/bronze_consumer.py
   ```
-- **Dashboard**: Phân tích & trực quan hóa
+- **Dashboard**: Analysis and visualization
   ```bash
   streamlit run src/dashboard/app.py
   ```
 
-### 6. Chạy dbt để xử lý dữ liệu
+### 6.Run dbt for Data Processing
 ```bash
 cd f1_transformation
-# Cấu hình profile trong profiles.yml
-# Chạy các model chuyển đổi
+# Configure profile in profiles.yml
+# Run transformation models
  dbt run
 ```
 
 ---
 
-## Cấu trúc thư mục
-
+## Directory Structure
 ```
 F1-Racing/
-├── cache/                # Lưu cache FastF1
-├── data/                 # Dữ liệu thô
-├── docker/               # Docker Compose cho Postgres, Kafka
-├── f1_transformation/    # Dự án dbt (model hóa dữ liệu)
-├── logs/                 # Log hệ thống
-├── notebook/             # Notebook phân tích
+├── cache/                # FastF1 cache storage
+├── data/                 # Raw data files
+├── docker/               # Docker Compose for Postgres & Kafka
+├── f1_transformation/    # dbt project (data modeling)
+├── logs/                 # System logs
+├── notebook/             # Analysis notebooks
 ├── src/
-│   ├── config/           # Cấu hình hệ thống
-│   ├── consumers/        # Kafka Consumer
-│   ├── dashboard/        # Ứng dụng Streamlit
-│   ├── producers/        # Kafka Producer
-│   └── utils/            # Tiện ích kết nối DB
+│   ├── config/           # System configuration
+│   ├── consumers/        # Kafka Consumers
+│   ├── dashboard/        # Streamlit application
+│   ├── producers/        # Kafka Producers
+│   └── utils/            # DB connection utilities
 ├── test/                 # Test scripts
-├── requirements.txt      # Thư viện Python
-├── .env                  # Biến môi trường
-├── .gitignore            # File loại trừ khi push git
-└── README.md             # Tài liệu này
+├── requirements.txt      # Python dependencies
+├── .env                  # Environment variables
+├── .gitignore            # Git exclusion file
+└── README.md             # This documentation
 ```
 
 ---
 
-## Thành phần chính
+## Key Components
 
 ### 1. Kafka Producer (`src/producers/telemetry_producer.py`)
-- Crawl dữ liệu telemetry từng chặng đua qua FastF1.
-- Chuẩn hóa & gửi từng bản ghi lên Kafka topic.
+- Fetches telemetry data for each race session via FastF1.
+- Normalizes and sends each record to a Kafka topic.
 
 ### 2. Kafka Consumer (`src/consumers/bronze_consumer.py`)
-- Nhận dữ liệu từ Kafka, ghi vào bảng partitioned trong Postgres.
-- Tự động tạo bảng partition theo năm.
+ - Consumes data from Kafka and writes it into partitioned tables in Postgres.
+ - Automatically generates table partitions by yea
 
 ### 3. Dashboard (`src/dashboard/app.py`)
-- Giao diện Streamlit: chọn năm, chặng, tay đua.
-- 3 tab: Race Report, Live Simulator, Performance Charts.
-- Mô phỏng trực quan vị trí xe, biểu đồ tốc độ, ga, phanh, RPM.
+ - Streamlit interface: Select Year, Grand Prix, and Driver.
+ - 3 Tabs: Race Report, Live Simulator, and Performance Charts.
+ - Visual simulation of car positions, speed charts, throttle, brake, and RPM.
 
 ### 4. dbt Transformation (`f1_transformation/`)
-- Xây dựng các model silver/gold tổng hợp thống kê, bảng xếp hạng.
-- Kết nối trực tiếp với Postgres.
-
----
-
-## Đóng góp & phát triển
-- Fork repo, tạo branch mới, commit & tạo pull request.
-- Mọi ý kiến đóng góp vui lòng mở issue hoặc liên hệ trực tiếp.
+ - Builds Silver/Gold models to aggregate statistics and standings.
+ - Connects directly to Postgres.
 
 ---
 
