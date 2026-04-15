@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# VSCode
+.vscode/
+
+# DBT
+f1_transformation/target/
+f1_transformation/dbt_packages/
+f1_transformation/logs/
+
+# Logs
+logs/
+
+# Cache
+cache/
+
+# Docker
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test outputs
+test/__pycache__/
+
+# Ignore compiled files
+*.so
+*.dll
+*.dylib
+
+# Ignore notebook output
+notebook/*.nbconvert.ipynb

@@ -1,0 +1,17 @@
+# Cấu hình Kafka
+kafka:
+  topic_name: "f1-telemetry"
+  group_id: "f1_main_consumer_v2"
+  bootstrap_servers: "localhost:9092"
+
+# Cấu hình cuộc đua mặc định (để test)
+default_race:
+  year: 2023
+  event: "Monaco Grand Prix"
+  session: "Q"
+  drivers: ["HAM", "VER", "LEC"]
+
+# Cấu hình xử lý dữ liệu
+processing:
+  frequency_hz: 20
+  batch_size: 50
