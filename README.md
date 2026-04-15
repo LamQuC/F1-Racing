@@ -1,4 +1,4 @@
-# F1 Racing Analytics - Quốc Lâm
+# F1 Racing Analytics 
 
 ## Mục tiêu dự án
 Dự án xây dựng hệ thống thu thập, xử lý, phân tích và trực quan hóa dữ liệu Telemetry của giải đua xe Công thức 1 (F1) theo thời gian thực. Hệ thống mô phỏng pipeline hiện đại với các thành phần: Kafka, PostgreSQL, FastF1, dbt, Streamlit.
@@ -127,6 +127,4 @@ F1-Racing/
 
 ---
 
-## Tác giả
-- Quốc Lâm
 - Liên hệ: [vlam711003@gmail.com]
