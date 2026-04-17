@@ -1,3 +1,7 @@
+import sys
+import os
+# Thêm đường dẫn gốc để import được src
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 import fastf1
 import json
 import time

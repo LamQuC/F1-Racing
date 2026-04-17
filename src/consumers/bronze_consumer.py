@@ -1,3 +1,7 @@
+import sys
+import os
+# Thêm đường dẫn gốc để import được src
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 import json
 import os
 from kafka import KafkaConsumer
@@ -52,7 +56,8 @@ def start_consumer():
         group_id=settings['kafka']['group_id'], 
         value_deserializer=lambda x: json.loads(x.decode('utf-8'))
     )
-
+    batch_size = 500
+    records = []
     try:
         for message in consumer:
             data = message.value
@@ -89,15 +94,18 @@ def start_consumer():
                 data.get('location')[1] if data.get('location') else 0
             )
             
-            cursor.execute(query, values)
-            conn.commit()
             
+            records.append((query, values))
+            if len(records) >= batch_size:
+                for q, v in records:
+                    cursor.execute(q, v)
+                conn.commit()
+                records = []
+
             if message.offset % 50 == 0:
                 print(f"📥 Saved offset {message.offset} for {data.get('driver')}")
-                
     except Exception as e:
         print(f"Lỗi khi lưu DB: {e}")
         conn.rollback()
-
 if __name__ == "__main__":
     start_consumer()

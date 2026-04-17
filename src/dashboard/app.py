@@ -30,8 +30,8 @@ def get_telemetry_data(year, event):
     df = pd.read_sql(query, engine)
     if not df.empty:
         # Xử lý Brake: Chuyển Boolean/Object về số 100/0
-        if df['brake'].dtype == 'bool' or df['brake'].dtype == 'object':
-            df['brake'] = df['brake'].apply(lambda x: 100 if x is True or str(x).lower() == 'true' else 0)
+        # if df['brake'].dtype == 'bool' or df['brake'].dtype == 'object':
+        #     df['brake'] = df['brake'].apply(lambda x: 100 if x is True or str(x).lower() == 'true' else 0)
         
         df['session_time'] = pd.to_timedelta(df['session_time'])
         df['rel_time'] = (df['session_time'].dt.total_seconds() - df['session_time'].dt.total_seconds().min()).round(2)
