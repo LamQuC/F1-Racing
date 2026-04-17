@@ -39,8 +39,8 @@ def stream_race_data(year, event_name):
                 row = df.iloc[i]
                 
                 # CHUẨN HÓA DỮ LIỆU TRƯỚC KHI GỬI
-                # Chuyển Brake từ True/False sang 1/0
-                brake_val = 1 if row['Brake'] is True else 0
+                # Chuyển Brake từ True/False sang 100/0
+                brake_val = 100.0 if row['Brake'] is True else 0.0
                 
                 msg = {
                     "driver": drv, 
@@ -50,8 +50,8 @@ def stream_race_data(year, event_name):
                     "speed": int(row['Speed']), 
                     "rpm": int(row['RPM']),
                     "gear": int(row['nGear']), 
-                    "throttle": float(row['Throttle']),  # Bổ sung Throttle
-                    "brake": brake_val,                  # Bổ sung Brake (đã ép kiểu int)
+                    "throttle": float(row['Throttle']),  
+                    "brake": brake_val,                  
                     "location": [float(row['X']), float(row['Y'])]
                 }
                 producer.send(TOPIC_NAME, value=msg)
